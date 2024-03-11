@@ -104,8 +104,7 @@ print(sse)
 best_k=0
 best_loss_difference=sse[0]
 for i in range(len(sse)-1):
-    print(f'curr sse diff: {sse[i]-sse[i+1]} for k={i}')
-    if(sse[i]-sse[i+1]<best_loss_difference):
+    if(sse[i]-sse[i+1]<best_loss_difference and sse[i]-sse[i+1]>0 and i<6):
         best_loss_difference=sse[i]-sse[i+1]
         best_k=i+1
 print(f'best k: {best_k} with difference in sse: {best_loss_difference}')
