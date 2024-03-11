@@ -60,3 +60,22 @@ def EIG_CDF(eig_list):
 	plt.show()
 
 EIG_CDF(eigenvalues)
+
+x_train_new_after, mu, E = PCA_train(x_train_flatten, 169)
+x_test_new_after = PCA_test(x_test_flatten, mu, E)
+x_train_new_unflatten_after=x_train_new_after.reshape(len(x_train_new_after),13,13)
+x_test_new_unflatten_after=x_test_new_after.reshape(len(x_test_new_after),13,13)
+
+plt.subplot(131)
+plt.title("Original Image")
+plt.imshow(x_train[5], cmap='gray')
+
+plt.subplot(132)
+plt.title("Image in lower dimension")
+plt.imshow(x_train_new_unflatten_after[4].astype(float), cmap='gray')
+
+plt.subplot(133)
+plt.title("Recovered Image")
+plt.imshow(recover_PCA(x_train_new_after[5],mu,E).reshape(64,64).astype(float), cmap='gray')
+
+plt.show()
