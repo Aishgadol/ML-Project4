@@ -10,11 +10,13 @@ def PCA_train(data, k):
     eigenvalues, eigenvectors = np.linalg.eig(scatter_mat)
     E=eigenvectors[:,np.argsort(eigenvalues)[-k:]].transpose()
     y=np.matmul(E,data.transpose())
-    return y
-	# Download data to k dimensions
+    return y, means, E
+    # Download data to k dimensions
 
 def PCA_test(test, mu, E):
-	# Implement here
-
+    test=test-mu
+    res=np.matmul(E,test.T)
+    return res
 def recover_PCA(data, mu, E):
-	# Implement here
+    new_data=np.mul(np.linalg.inv(E),data.T)+mu
+    return new_data
