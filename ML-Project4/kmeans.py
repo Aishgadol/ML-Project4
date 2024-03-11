@@ -87,4 +87,36 @@ plt.scatter(centroids[:, 0], centroids[:, 1], marker='*', s=200, c='black', labe
 #plt.legend()
 
 plt.show()
+'''
+using elbow method to choose another number of centroids, between 1 and 10
+elbow method means that we calc the SSE (loss) per number of clusters, and choose where the loss betweeen
+i and i+1 clusters is minimal, then i is the optimal number of clusters
+'''
+sse = []
+list_k = list(range(1,11))
+for k in list_k:
+    clust=Kmeans(n_clusters=k)
+    clust.fit(data)
+    labels = clust.labels
+    centroids = clust.centroids
+    sse.append(clust.error)
+print(sse)
+best_k=0
+best_loss_difference=sse[0]
+for i in range(len(sse)-1):
+    print(f'curr sse diff: {sse[i]-sse[i+1]} for k={i}')
+    if(sse[i]-sse[i+1]<best_loss_difference):
+        best_loss_difference=sse[i]-sse[i+1]
+        best_k=i+1
+print(f'best k: {best_k} with difference in sse: {best_loss_difference}')
+'''Plot sse against k'''
+plt.figure(figsize=(6, 6))
+plt.plot(list_k, sse, '-o')
+plt.xlabel(r'Number of clusters *k*')
+plt.ylabel('Sum of squared distance')
+plt.show()
 
+'''
+now we plot the clustered data according to the best k we found
+we'll add convexhull to draw lines around each cluster so it's more fun to look at 
+'''
