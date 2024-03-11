@@ -120,3 +120,26 @@ plt.show()
 now we plot the clustered data according to the best k we found
 we'll add convexhull to draw lines around each cluster so it's more fun to look at 
 '''
+from scipy.spatial import ConvexHull
+colors=['red', 'blue', 'green', 'magenta', 'cyan', 'black','pink','yellow','orange']
+clust = Kmeans(n_clusters=best_k)
+clust.fit(data)
+labels = clust.labels
+centroids = clust.centroids
+for i in range(len(centroids)):
+	print(f'centroid {i} is at: {centroids[i]}')
+clusters={i:data[labels==i] for i in range(best_k)}
+for i in range(best_k):
+	plt.scatter(clusters[i][:,0],clusters[i][:,1], c=colors[i],label=f'cluster {i+1}')
+plt.scatter(centroids[:, 0], centroids[:, 1], marker='*', s=200, c='black', label='centroid')
+plt.legend(fontsize='5')
+for i in range(len(centroids)):
+	# Find the convex hull of the cluster points
+	cluster_points = data[labels == i]
+	hull = ConvexHull(cluster_points)
+
+	# Plot the convex hull
+	for simplex in hull.simplices:
+		plt.plot(cluster_points[simplex, 0], cluster_points[simplex, 1], c='gray')
+
+plt.show()
