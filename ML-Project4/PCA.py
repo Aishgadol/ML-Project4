@@ -79,3 +79,34 @@ plt.title("Recovered Image")
 plt.imshow(recover_PCA(x_train_new_after[5],mu,E).reshape(64,64).astype(float), cmap='gray')
 
 plt.show()
+ks=range(1,20)
+accs=[]
+best_k=0
+best_score_means=0
+x_train_after_PCA, some_mu, some_e=PCA_train(x_train_flatten, 169)
+for k in ks:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    #knn.fit(x_train_flatten,y_train)
+    scores = cross_val_score(knn, x_train_after_PCA.astype(float), y_train, cv=5)  # 5-fold cross-validation
+    accs.append(np.mean(scores))
+    if(best_score_means<np.mean(scores)):
+        best_score_means=np.mean(scores)
+        best_k=k
+
+plt.figure(figsize=(14,5))
+plt.plot(ks, accs)
+plt.xlabel('k')
+plt.title(f'best k: {best_k}')
+plt.xticks(ks)
+plt.ylabel('avg accuracy')
+plt.show()
+
+knn=KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(x_train_new_after.astype(float), y_train)
+y_pred=knn.predict(x_test_new_after.astype(float))
+hits=0
+for i in range(len(y_pred)):
+    if(y_pred[i]==y_test[i]):
+        hits+=1
+acc=hits/len(y_pred)
+print(f'acc on test is {acc}')
